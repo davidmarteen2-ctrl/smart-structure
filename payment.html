@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Start Your Application — SmartTradeHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── RESET & TOKENS ───────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    :root {
+      --bg:      #0A0A0F;
+      --surface: #121218;
+      --surface2:#18181f;
+      --border:  rgba(255,255,255,0.07);
+      --border2: rgba(255,255,255,0.12);
+      --text:    #f0f0f0;
+      --text2:   #888;
+      --text3:   #444;
+      --cyan:    #00D4FF;
+      --cyan-dim:rgba(0,212,255,0.1);
+      --cyan-glow:rgba(0,212,255,0.3);
+      --orange:  #FF6B00;
+      --red:     #FF4060;
+      --green:   #00D48A;
+      --font-d:  'Space Grotesk', sans-serif;
+      --font-b:  'Inter', sans-serif;
+      --ease:    cubic-bezier(0.16, 1, 0.3, 1);
+      --radius:  16px;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-b);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+    input, select, textarea, button { font-family: inherit; }
+
+    /* ─── HEADER ───────────────────────────────────────────────── */
+    .pay-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 64px;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      padding: 0 32px;
+    }
+    .pay-logo {
+      font-family: var(--font-d);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .pay-back {
+      margin-left: auto;
+      font-size: 0.8rem;
+      color: var(--text2);
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pay-back:hover { color: var(--cyan); }
+
+    /* ─── LAYOUT ───────────────────────────────────────────────── */
+    .pay-wrap {
+      min-height: 100vh;
+      padding: 100px 20px 60px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .pay-card {
+      width: 100%;
+      max-width: 580px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 48px 44px;
+    }
+    .pay-title {
+      font-family: var(--font-d);
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .pay-subtitle {
+      font-size: 0.9rem;
+      color: var(--text2);
+      margin-bottom: 36px;
+      line-height: 1.6;
+    }
+
+    /* ─── WALLET SECTION ───────────────────────────────────────── */
+    .wallet-section {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .wallet-label {
+      font-size: 0.72rem;
+      font-family: var(--font-d);
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 16px;
+    }
+
+    /* Network toggle */
+    .network-pills {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .net-pill {
+      padding: 7px 18px;
+      border-radius: 999px;
+      font-family: var(--font-d);
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid var(--border2);
+      color: var(--text2);
+      cursor: pointer;
+      background: transparent;
+      transition: all 0.2s var(--ease);
+    }
+    .net-pill:hover { border-color: var(--cyan); color: var(--text); }
+    .net-pill.active {
+      background: var(--cyan);
+      border-color: var(--cyan);
+      color: #000;
+    }
+
+    /* Wallet address display */
+    .wallet-address-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .wallet-address {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      color: var(--text);
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      padding: 10px 14px;
+      flex: 1;
+      word-break: break-all;
+      line-height: 1.5;
+    }
+    .copy-btn {
+      flex-shrink: 0;
+      padding: 9px 16px;
+      background: var(--cyan-dim);
+      border: 1px solid rgba(0,212,255,0.25);
+      border-radius: 10px;
+      color: var(--cyan);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .copy-btn:hover { background: rgba(0,212,255,0.2); }
+    .copy-btn.copied { background: rgba(0,212,138,0.15); color: var(--green); border-color: rgba(0,212,138,0.3); }
+
+    /* ─── FORM ─────────────────────────────────────────────────── */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text2);
+      margin-bottom: 8px;
+      letter-spacing: 0.01em;
+    }
+    .form-label .req { color: var(--orange); margin-left: 2px; }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 0.9rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: rgba(0,212,255,0.4);
+      box-shadow: 0 0 0 3px rgba(0,212,255,0.06);
+    }
+    .form-input::placeholder, .form-textarea::placeholder {
+      color: var(--text3);
+    }
+    .form-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+      cursor: pointer;
+    }
+    .form-select option { background: var(--surface); }
+    .form-textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+
+    /* ─── DISCOUNT CODE ─────────────────────────────────────────── */
+    .discount-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+    .discount-row .form-group { flex: 1; margin-bottom: 0; }
+    .discount-apply {
+      flex-shrink: 0;
+      padding: 12px 20px;
+      background: var(--cyan-dim);
+      border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 12px;
+      color: var(--cyan);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .discount-apply:hover { background: rgba(0,212,255,0.18); }
+
+    .discount-msg {
+      margin-top: 8px;
+      font-size: 0.78rem;
+      min-height: 18px;
+      transition: all 0.2s ease;
+    }
+    .discount-msg.valid { color: var(--green); }
+    .discount-msg.invalid { color: var(--red); }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%     { transform: translateX(-6px); }
+      40%     { transform: translateX(6px); }
+      60%     { transform: translateX(-4px); }
+      80%     { transform: translateX(4px); }
+    }
+    .shake { animation: shake 0.4s ease; }
+
+    /* ─── FEE DISPLAY ───────────────────────────────────────────── */
+    .fee-display {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .fee-label {
+      font-size: 0.82rem;
+      color: var(--text2);
+    }
+    .fee-amount {
+      font-family: var(--font-d);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      transition: color 0.3s ease;
+    }
+    .fee-amount.discounted { color: var(--green); }
+
+    /* ─── SUBMIT ───────────────────────────────────────────────── */
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 999px;
+      background: var(--orange);
+      color: #fff;
+      font-family: var(--font-d);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.2s var(--ease), background 0.2s ease;
+      margin-top: 4px;
+    }
+    .submit-btn:hover { transform: translateY(-2px); background: #ff8020; }
+    .submit-btn:active { transform: scale(0.99); }
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ─── SUCCESS STATE ─────────────────────────────────────────── */
+    #success-state {
+      display: none;
+      text-align: center;
+      padding: 20px 0;
+    }
+    .success-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(0,212,138,0.1);
+      border: 2px solid rgba(0,212,138,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 28px;
+    }
+    .success-icon svg { color: var(--green); }
+    .success-title {
+      font-family: var(--font-d);
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+    .success-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .success-line { font-size: 0.9rem; color: var(--text2); }
+
+    /* ─── DIVIDER ───────────────────────────────────────────────── */
+    .form-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 28px 0;
+    }
+
+    /* ─── RESPONSIVE ────────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .pay-card { padding: 32px 24px; }
+      .pay-title { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="pay-header">
+    <div class="pay-logo">SmartTradeHQ</div>
+    <a href="index.html" class="pay-back">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      Back to Home
+    </a>
+  </header>
+
+  <div class="pay-wrap">
+    <div class="pay-card">
+
+      <!-- Form state -->
+      <div id="form-state">
+        <h1 class="pay-title">Start Your Application</h1>
+        <p class="pay-subtitle">Complete the form below. David will contact you within 24 hours.</p>
+
+        <!-- Wallet section -->
+        <div class="wallet-section">
+          <div class="wallet-label">Setup Fee — $400 USDT</div>
+          <div class="network-pills">
+            <button class="net-pill active" data-network="trc20">TRC20</button>
+            <button class="net-pill" data-network="erc20">ERC20</button>
+            <button class="net-pill" data-network="bep20">BEP20</button>
+          </div>
+          <div class="wallet-address-wrap">
+            <div class="wallet-address" id="wallet-address">TAv6bQQSvxsF7ruk26qfNur9Sogofa5tWJ</div>
+            <button class="copy-btn" id="copy-btn">Copy</button>
+          </div>
+        </div>
+
+        <!-- Application form -->
+        <form id="application-form" novalidate>
+          <!-- Web3Forms hidden fields -->
+          <input type="hidden" name="access_key" value="fc88a5e5-a411-46e4-9f87-3525a39bcf63" />
+          <input type="hidden" name="subject" id="form-subject" value="New SmartTradeHQ Application" />
+          <input type="hidden" name="from_name" value="SmartTradeHQ Application" />
+          <input type="hidden" name="redirect" value="false" />
+
+          <div class="form-group">
+            <label class="form-label" for="full-name">Full Name <span class="req">*</span></label>
+            <input class="form-input" id="full-name" name="full_name" type="text" placeholder="John Doe" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="email">Email Address <span class="req">*</span></label>
+            <input class="form-input" id="email" name="email" type="email" placeholder="john@example.com" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="tier">Tier <span class="req">*</span></label>
+            <select class="form-select" id="tier" name="tier" required>
+              <option value="">Select a tier…</option>
+              <option value="scout">Scout — $2,000 minimum · 50/50 split</option>
+              <option value="commander">Commander — $5,000 minimum · 60% to you</option>
+              <option value="warlord">Warlord — $10,000+ · Custom split</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="investment">Investment Amount (USD) <span class="req">*</span></label>
+            <input class="form-input" id="investment" name="investment_amount" type="number" placeholder="e.g. 5000" min="2000" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="txid">Transaction ID / Hash <span class="req">*</span></label>
+            <input class="form-input" id="txid" name="transaction_id" type="text" placeholder="Your USDT setup fee transaction ID" required />
+          </div>
+
+          <hr class="form-divider" />
+
+          <!-- Discount code -->
+          <div class="discount-row">
+            <div class="form-group">
+              <label class="form-label" for="discount-code">Discount Code <span style="color:var(--text3)">(optional)</span></label>
+              <input class="form-input" id="discount-code" name="discount_code" type="text" placeholder="e.g. DSP200" autocomplete="off" />
+            </div>
+            <button type="button" class="discount-apply" id="apply-discount">Apply</button>
+          </div>
+          <div class="discount-msg" id="discount-msg"></div>
+
+          <!-- Fee display -->
+          <div class="fee-display">
+            <span class="fee-label">Setup Fee Due</span>
+            <span class="fee-amount" id="fee-display">$400 USDT</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="message">Message (optional)</label>
+            <textarea class="form-textarea" id="message" name="message" placeholder="Any questions or context about your application…"></textarea>
+          </div>
+
+          <!-- Network hidden field -->
+          <input type="hidden" name="payment_network" id="network-hidden" value="TRC20" />
+          <input type="hidden" name="discount_applied" id="discount-hidden" value="" />
+          <input type="hidden" name="final_fee" id="fee-hidden" value="$400 USDT" />
+
+          <button type="submit" class="submit-btn" id="submit-btn">Submit Application</button>
+        </form>
+      </div>
+
+      <!-- Success state -->
+      <div id="success-state">
+        <div class="success-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <h2 class="success-title">Application Received.</h2>
+        <div class="success-lines">
+          <p class="success-line">David will contact you within 24 hours.</p>
+          <p class="success-line">Email confirmation sent to your inbox.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    /* ─── DISCOUNT CODES ─────────────────────────────────────── */
+    // Edit codes here directly:
+    const DISCOUNT_CODES = {
+      'DSP200':  { label: '$200 off setup fee',     feeLabel: '$200 USDT', feeValue: 200 },
+      'DSP400':  { label: '$400 off setup fee',     feeLabel: '$0 USDT',   feeValue: 0   },
+      'SCOUT50': { label: '$50 off Scout tier',     feeLabel: '$350 USDT', feeValue: 350 },
+      'VIP':     { label: '$400 off all tiers',     feeLabel: '$0 USDT',   feeValue: 0   },
+    };
+    const BASE_FEE = 400;
+
+    /* ─── WALLET ADDRESSES ───────────────────────────────────── */
+    const WALLETS = {
+      trc20: 'TAv6bQQSvxsF7ruk26qfNur9Sogofa5tWJ',
+      erc20: '0x2c80e04b0d4e061041327faca47c35e2d7710538',
+      bep20: '0x2c80e04b0d4e061041327faca47c35e2d7710538',
+    };
+
+    /* ─── DOM ─────────────────────────────────────────────────── */
+    const walletAddressEl  = document.getElementById('wallet-address');
+    const copyBtn          = document.getElementById('copy-btn');
+    const networkHidden    = document.getElementById('network-hidden');
+    const discountInput    = document.getElementById('discount-code');
+    const discountMsg      = document.getElementById('discount-msg');
+    const discountHidden   = document.getElementById('discount-hidden');
+    const feeDisplay       = document.getElementById('fee-display');
+    const feeHidden        = document.getElementById('fee-hidden');
+    const applyBtn         = document.getElementById('apply-discount');
+    const form             = document.getElementById('application-form');
+    const submitBtn        = document.getElementById('submit-btn');
+    const formState        = document.getElementById('form-state');
+    const successState     = document.getElementById('success-state');
+    const tierSelect       = document.getElementById('tier');
+    const formSubject      = document.getElementById('form-subject');
+
+    let activeDiscount = null;
+
+    /* ─── NETWORK TOGGLE ─────────────────────────────────────── */
+    document.querySelectorAll('.net-pill').forEach((pill) => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.net-pill').forEach((p) => p.classList.remove('active'));
+        pill.classList.add('active');
+        const net = pill.dataset.network;
+        walletAddressEl.textContent = WALLETS[net];
+        networkHidden.value = net.toUpperCase();
+        copyBtn.textContent = 'Copy';
+        copyBtn.classList.remove('copied');
+      });
+    });
+
+    /* ─── COPY WALLET ─────────────────────────────────────────── */
+    copyBtn.addEventListener('click', () => {
+      const addr = walletAddressEl.textContent.trim();
+      navigator.clipboard.writeText(addr).then(() => {
+        copyBtn.textContent = 'Copied!';
+        copyBtn.classList.add('copied');
+        setTimeout(() => {
+          copyBtn.textContent = 'Copy';
+          copyBtn.classList.remove('copied');
+        }, 2500);
+      }).catch(() => {
+        // Fallback
+        const ta = document.createElement('textarea');
+        ta.value = addr;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        copyBtn.textContent = 'Copied!';
+        copyBtn.classList.add('copied');
+        setTimeout(() => { copyBtn.textContent = 'Copy'; copyBtn.classList.remove('copied'); }, 2500);
+      });
+    });
+
+    /* ─── DISCOUNT LOGIC ─────────────────────────────────────── */
+    function applyDiscount() {
+      const code = discountInput.value.trim().toUpperCase();
+      if (!code) {
+        discountMsg.textContent = '';
+        discountMsg.className = 'discount-msg';
+        return;
+      }
+
+      if (DISCOUNT_CODES[code]) {
+        activeDiscount = DISCOUNT_CODES[code];
+        discountMsg.textContent = '✓ ' + activeDiscount.label + ' applied!';
+        discountMsg.className = 'discount-msg valid';
+        feeDisplay.textContent = activeDiscount.feeLabel;
+        feeDisplay.className = 'fee-amount discounted';
+        discountHidden.value = code + ' — ' + activeDiscount.label;
+        feeHidden.value = activeDiscount.feeLabel;
+      } else {
+        activeDiscount = null;
+        discountMsg.textContent = 'Invalid discount code.';
+        discountMsg.className = 'discount-msg invalid';
+        feeDisplay.textContent = '$' + BASE_FEE + ' USDT';
+        feeDisplay.className = 'fee-amount';
+        discountHidden.value = '';
+        feeHidden.value = '$' + BASE_FEE + ' USDT';
+        // Shake animation
+        discountInput.classList.remove('shake');
+        void discountInput.offsetWidth; // reflow
+        discountInput.classList.add('shake');
+      }
+    }
+
+    applyBtn.addEventListener('click', applyDiscount);
+    discountInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); applyDiscount(); }
+    });
+
+    /* ─── PRE-FILL TIER FROM URL ─────────────────────────────── */
+    const params = new URLSearchParams(window.location.search);
+    const tierParam = params.get('tier');
+    if (tierParam && tierSelect) {
+      tierSelect.value = tierParam.toLowerCase();
+    }
+
+    /* ─── FORM SUBJECT UPDATE ON TIER CHANGE ─────────────────── */
+    tierSelect.addEventListener('change', () => {
+      const t = tierSelect.options[tierSelect.selectedIndex].text;
+      formSubject.value = 'New SmartTradeHQ Application — ' + t;
+    });
+
+    /* ─── FORM SUBMIT ─────────────────────────────────────────── */
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Basic validation
+      const name       = document.getElementById('full-name').value.trim();
+      const email      = document.getElementById('email').value.trim();
+      const tier       = tierSelect.value;
+      const investment = document.getElementById('investment').value.trim();
+      const txid       = document.getElementById('txid').value.trim();
+
+      if (!name || !email || !tier || !investment || !txid) {
+        alert('Please fill in all required fields.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting…';
+
+      try {
+        const formData = new FormData(form);
+        const response = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          body: formData,
+        });
+        const data = await response.json();
+
+        if (data.success) {
+          formState.style.display = 'none';
+          successState.style.display = 'block';
+        } else {
+          throw new Error(data.message || 'Submission failed');
+        }
+      } catch (err) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Application';
+        alert('Something went wrong. Please try again or email davidemre1991@gmail.com directly.');
+        console.error(err);
+      }
+    });
+
+  })();
+  </script>
+</body>
+</html>
